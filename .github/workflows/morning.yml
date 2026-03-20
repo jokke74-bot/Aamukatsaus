@@ -1,0 +1,27 @@
+name: Morning Stock Report
+
+on:
+  schedule:
+    - cron: "30 5 * * 1-5"   # 07:30 Helsinki (UTC+2)
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install yfinance requests
+
+      - name: Run script
+        run: python send_report.py
+        env:
+          TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK }}
