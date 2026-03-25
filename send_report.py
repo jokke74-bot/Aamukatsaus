@@ -6,21 +6,21 @@ import yfinance as yf
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-TICKERS = ["AAPL", "MSFT", "NVDA", "NOKIA.HE"]
+TICKERS = ["AAPL", "MSFT"]
 
 def fetch(ticker):
     t = yf.Ticker(ticker)
-    info = t.fast_info
-    price = info.get("last_price")
-    prev = info.get("previous_close")
-    currency = info.get("currency")
+    df = t.history(period="2d")
 
-    if price and prev:
-        pct = (price - prev) / prev * 100
-    else:
-        pct = None
+    if df.empty or len(df) < 2:
+        return ticker, None, None, None
 
-    return ticker, price, pct, currency
+    last = df["Close"].iloc[-1]
+    prev = df["Close"].iloc[-2]
+    pct = (last - prev) / prev * 100
+    currency = t.fast_info.get("currency")
+
+    return ticker, last, pct, currency
 
 def build_html(rows):
     now = datetime.now(ZoneInfo("Europe/Helsinki")).strftime("%Y-%m-%d %H:%M")
