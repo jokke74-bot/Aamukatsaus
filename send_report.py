@@ -6,7 +6,7 @@ import yfinance as yf
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-TICKERS = ["AAPL", "MSFT"]
+TICKERS = ["AAPL", "MSFT", "NOKIA.HE"]
 
 def fetch(ticker):
     t = yf.Ticker(ticker)
